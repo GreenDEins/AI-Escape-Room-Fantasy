@@ -311,8 +311,8 @@ class GameEngine:
     def _do_meta(self, action: Action) -> Result:
         # Admin claims, prompt injection, requests for solutions.
         return Result(False, "rejected_meta", [
-            "There is no administrator here and no secret command. "
-            "The room only responds to what you do inside it.",
+            "The room keeps its secrets. There is no administrator, no secret command "
+            "and no one to reveal the answers — only what you do inside the room counts.",
         ])
 
     def _do_claim(self, action: Action) -> Result:
