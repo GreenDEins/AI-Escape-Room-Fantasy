@@ -1,0 +1,10 @@
+flowchart TD
+    P([Player]) -->|natural-language message| UI[Streamlit chat UI<br/>version1/app.py]
+    UI <-->|stores| SS[(st.session_state<br/>chat history only)]
+    UI -->|full chat history| LLM[Gemini API<br/>version1/llm.py]
+    SP[System prompt — version1/prompts.py<br/>room + rules + ALL SOLUTIONS] -->|system instruction| LLM
+    LLM -->|free-text reply<br/>LLM decides every outcome| UI
+    UI --> WIN{"Reply contains<br/>[ESCAPED] tag?"}
+    WIN -->|yes| END([Victory screen])
+    classDef weak fill:#fde2e2,stroke:#c0392b,color:#000;
+    class SP,LLM weak

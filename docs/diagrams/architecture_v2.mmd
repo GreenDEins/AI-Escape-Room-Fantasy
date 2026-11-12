@@ -1,0 +1,15 @@
+flowchart TD
+    P([Player]) -->|natural-language message| UI[Streamlit UI — version2/app.py]
+    UI --> PR[HybridParser — parser.py<br/>1 regex rules + meta/claim detection<br/>2 LLM fallback, output validated]
+    PR -.->|object names only| LLMP[Gemini · JSON mode]
+    PR -->|structured Action<br/>verb, target, item, code| EN[GameEngine — engine.py<br/>validates and applies every action]
+    CFG[(game_config.json<br/>objects · items · codes · rules)] --> EN
+    EN <-->|only writer| ST[(Game state dict<br/>inventory · solved · locks · history)]
+    EN -->|"Result(ok, outcome, facts)"| NR[Narrator — narrator.py<br/>leak + fake-escape guard]
+    NR -.->|facts only| LLMN[Gemini · narration]
+    NR -->|narration or plain facts| UI
+    ST -->|status · inventory · puzzles| UI
+    classDef trusted fill:#e3f4e8,stroke:#1e8449,color:#000;
+    classDef llm fill:#eaf0fb,stroke:#2e5aa8,color:#000;
+    class EN,CFG,ST trusted
+    class LLMP,LLMN llm
