@@ -1,0 +1,122 @@
+{
+  "title": "The Locked Library",
+  "intro": "You wake up on a cold wooden floor. Dust hangs in the air, lit by a single flickering lamp. Rows of old books line the walls — you are locked inside a library. The only exit is a heavy oak door with a four-digit keypad.",
+  "room_description": "A small, dim library. You can see a desk, a tall bookshelf, an oil painting, a grandfather clock, a dusty rug and a heavy oak door with a keypad.",
+
+  "objects": {
+    "desk": {
+      "name": "desk",
+      "aliases": ["desk", "table", "writing desk"],
+      "description": "An old oak desk covered in scratches. A torn note lies on top. The desk has one built-in drawer with a small combination lock.",
+      "on_examine": { "reveal_items": ["torn_note"] }
+    },
+    "bookshelf": {
+      "name": "bookshelf",
+      "aliases": ["bookshelf", "bookcase", "shelf", "shelves", "books", "book"],
+      "description": "A tall shelf of dusty books. Three of them stand out: each spine is marked with a single hand-painted digit. From left to right: a green book marked 2, a red book marked 5 and a blue book marked 8.",
+      "on_examine": { "discover": "book_digits" }
+    },
+    "painting": {
+      "name": "painting",
+      "aliases": ["painting", "picture", "portrait", "canvas", "frame"],
+      "description": "An oil painting of three scholars reading. From left to right they hold a red book, a blue book and a green book. Nothing is hidden behind the frame.",
+      "on_examine": { "discover": "painting_order" }
+    },
+    "drawer": {
+      "name": "drawer",
+      "aliases": ["drawer", "desk drawer"],
+      "description_locked": "The desk drawer is locked with a three-digit combination lock.",
+      "description_open": "The drawer is open.",
+      "lock": {
+        "code": "582",
+        "digits": 3,
+        "solves": "drawer_puzzle",
+        "requires_solved": []
+      },
+      "contains": ["uv_flashlight"],
+      "on_unlock": "The lock clicks and the drawer slides open. Inside lies a small UV flashlight."
+    },
+    "clock": {
+      "name": "grandfather clock",
+      "aliases": ["clock", "grandfather clock", "hands", "clock face"],
+      "description": "A grandfather clock that stopped long ago. Its hands point to 9:15. A brass plate beneath the face reads: 'When light fails, time holds the end.'",
+      "on_examine": { "discover": "clock_clue", "solves": "clock_puzzle" }
+    },
+    "rug": {
+      "name": "rug",
+      "aliases": ["rug", "carpet", "floor"],
+      "description": "A dusty Persian rug. You lift a corner — there is nothing underneath but floorboards."
+    },
+    "door": {
+      "name": "door",
+      "aliases": ["door", "exit", "keypad", "oak door", "lock"],
+      "description_locked": "A heavy oak door. A four-digit keypad glows faintly beside the handle. It is firmly locked.",
+      "description_open": "The door stands open. Fresh air flows in.",
+      "lock": {
+        "code": "4715",
+        "digits": 4,
+        "solves": "door_puzzle",
+        "requires_solved": ["drawer_puzzle", "uv_puzzle", "clock_puzzle"]
+      },
+      "is_exit": true,
+      "on_unlock": "The keypad turns green. With a heavy clunk the bolts slide back and the oak door swings open. You step out of the library — you are free!"
+    }
+  },
+
+  "items": {
+    "torn_note": {
+      "name": "torn note",
+      "aliases": ["note", "torn note", "paper", "letter"],
+      "location": "desk",
+      "description": "A torn piece of paper. In faded ink: 'Order matters. Ask the painting.'"
+    },
+    "uv_flashlight": {
+      "name": "UV flashlight",
+      "aliases": ["flashlight", "uv flashlight", "torch", "uv light", "uv lamp", "uv torch", "light"],
+      "location": "drawer",
+      "description": "A small ultraviolet flashlight. It casts a faint purple glow."
+    }
+  },
+
+  "interactions": [
+    {
+      "item": "uv_flashlight",
+      "target": "desk",
+      "solves": "uv_puzzle",
+      "text": "Under the purple light, glowing letters appear on the desk surface: 'The door begins with 47.'",
+      "repeat_text": "The glowing letters are still there: 'The door begins with 47.'"
+    },
+    {
+      "item": "uv_flashlight",
+      "target": "painting",
+      "text": "You sweep the purple light over the painting. Nothing glows."
+    },
+    {
+      "item": "uv_flashlight",
+      "target": "bookshelf",
+      "text": "The book spines show nothing new under the UV light."
+    },
+    {
+      "item": "torn_note",
+      "target": "painting",
+      "text": "You hold the note up to the painting. The colours of the scholars' books seem to matter."
+    }
+  ],
+
+  "puzzles": {
+    "drawer_puzzle": "Open the locked drawer",
+    "uv_puzzle": "Reveal the hidden message",
+    "clock_puzzle": "Understand the stopped clock",
+    "door_puzzle": "Unlock the exit"
+  },
+
+  "hints": [
+    { "unless_solved": "drawer_puzzle", "unless_discovered": "book_digits", "text": "Some of the books on the shelf look different from the rest." },
+    { "unless_solved": "drawer_puzzle", "unless_discovered": "painting_order", "text": "The torn note says to ask the painting. What are the scholars holding?" },
+    { "unless_solved": "drawer_puzzle", "text": "Read the book digits in the order of the colours in the painting." },
+    { "unless_inventory": "uv_flashlight", "text": "Something useful is inside the open drawer." },
+    { "unless_solved": "uv_puzzle", "text": "Ultraviolet light reveals invisible ink. Try it on the furniture." },
+    { "unless_solved": "clock_puzzle", "text": "The clock has stopped. What time does it show?" },
+    { "unless_solved": "door_puzzle", "text": "You now know how the door code begins and how it ends." }
+  ]
+}
