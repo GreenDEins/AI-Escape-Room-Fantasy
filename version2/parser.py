@@ -44,6 +44,7 @@ VERB_PATTERNS = [
     ("hint", r"\b(hint|stuck|clue please|help me solve|give me a clue)\b"),
     ("inventory", r"^(i|inv)$|\b(inventory|my items|what do i (have|carry)|my bag|my pockets)\b"),
     ("look", r"^(look|l)$|\b(look around|where am i|describe the room|surroundings|look at the room)\b"),
+    ("examine", r"\btake a (closer |good |quick )?look\b"),
     ("use", r"\b(use|shine|point|apply|hold)\b"),
     ("take", r"\b(take|pick up|pick|grab|collect|get|pocket|carry)\b"),
     ("open", r"\b(open|unlock|pull)\b"),
@@ -87,11 +88,19 @@ class RuleParser:
     @staticmethod
     def _noun_after_verb(text: str, verb_regex: str) -> str | None:
         """Best guess at the unknown noun the player typed, e.g. 'sword'."""
-        m = re.search(verb_regex + r"\s+(?:up\s+|at\s+|the\s+|a\s+|an\s+|my\s+)*([a-z][a-z\- ]{1,30})", text)
+        m = re.search(verb_regex + r"\s+(?:up\s+|at\s+|the\s+|a\s+|an\s+|my\s+|this\s+|that\s+)*([a-z][a-z\- ]{1,40})", text)
         if not m:
             return None
-        words = [w for w in m.group(m.lastindex).split() if w not in {"on", "with", "at", "to", "the"}]
-        return words[0] if words else None
+        stop = {"on", "with", "at", "to", "the", "and", "from", "in", "into", "onto", "then", "hanging", "that", "which"}
+        words: list[str] = []
+        for w in m.group(m.lastindex).split():
+            if w in stop:
+                break
+            words.append(w)
+        return " ".join(words[:3]) or None
+
+    def _phrase_has_alias(self, phrase: str) -> bool:
+        return any(re.search(rf"\b{re.escape(alias)}\b", phrase) for alias, _ in self.alias_map)
 
     def parse(self, text: str) -> Action:
         t = text.lower().strip()
@@ -130,6 +139,13 @@ class RuleParser:
                 return Action("use", item=item, target=rest[0] if rest else None)
             target = entities[0] if entities else None
             raw = None if target else self._noun_after_verb(t, pattern)
+            if target and verb == "take":
+                # "take the sword ... and smash the door": the object of the verb is
+                # 'sword', not 'door'. If the words right after the verb are not a
+                # known thing, report the unknown thing instead of the later match.
+                noun = self._noun_after_verb(t, pattern)
+                if noun and not self._phrase_has_alias(noun):
+                    target, raw = None, noun
             if verb == "examine" and target is None and raw is None:
                 return Action("look")
             return Action(verb, target=target, raw_target=raw)
