@@ -63,6 +63,32 @@ parser = HybridParser(RuleParser(CONFIG), LLMParser(client, model, CONFIG) if cl
 narrator = Narrator(CONFIG, client, model)
 
 
+# Which close-up illustration (ui/art.py) to show for a successful action.
+EXAMINE_ART = {"bookshelf": "bookshelf_close", "painting": "painting", "clock": "clock", "desk": "desk",
+               "drawer": "desk", "rug": "rug", "sconces": "sconces", "window": "window", "door": "door",
+               "torn_note": "note", "moon_lantern": "lantern"}
+
+
+def pick_art(action: Action, result) -> str | None:
+    """Purely cosmetic: choose an illustration for the Dungeon Master's reply."""
+    if not result.ok:
+        return None
+    lantern_waiting = (not state["locked"]["drawer"]) and "moon_lantern" not in state["inventory"]
+    if result.outcome == "escaped":
+        return "door_open"
+    if result.outcome == "unlocked":
+        return "drawer_open"
+    if result.outcome in ("puzzle_solved", "use") and action.target == "desk" and action.item == "moon_lantern":
+        return "reveal"
+    if result.outcome == "take":
+        return EXAMINE_ART.get(action.target)
+    if result.outcome in ("examine", "examine_item", "open"):
+        if action.target in ("desk", "drawer") and lantern_waiting:
+            return "drawer_open"
+        return EXAMINE_ART.get(action.target)
+    return None
+
+
 def play_turn(player_text: str, action: Action | None = None, dice: int | None = None) -> None:
     """Run one turn through parser -> engine -> narrator and store both messages."""
     st.session_state.messages.append({"role": "user", "content": player_text})
@@ -73,7 +99,8 @@ def play_turn(player_text: str, action: Action | None = None, dice: int | None =
     recent = [m["content"] for m in st.session_state.messages if m["role"] == "assistant"]
     reply = narrator.narrate(result, player_text, recent)
 
-    st.session_state.messages.append({"role": "assistant", "content": reply, "dice": dice})
+    st.session_state.messages.append({"role": "assistant", "content": reply, "dice": dice,
+                                      "art": pick_art(action, result)})
     st.session_state.debug_log.append({
         "input": player_text,
         "action": action.to_dict(),
@@ -117,14 +144,19 @@ with st.sidebar:
         st.json(st.session_state.debug_log[-5:])
 
 if roll_clicked:
-    play_turn("I study the room for anything I might have missed.", Action("hint"), dice=random.randint(1, 20))
+    with st.spinner("The dice tumble across the table..."):
+        play_turn("I study the room for anything I might have missed.", Action("hint"), dice=random.randint(1, 20))
     st.rerun()
 
 # ---------- Main stage ----------
-theme.banner(CONFIG["title"], CONFIG.get("subtitle", ""), "Version 2")
+theme.banner(CONFIG["title"], CONFIG.get("subtitle", ""), "Version 2",
+             drawer_open=not state["locked"]["drawer"], lantern_taken="moon_lantern" in state["inventory"],
+             message_revealed="moonlight_puzzle" in state["solved"], door_open=state["escaped"])
 
 for msg in st.session_state.messages:
     extra = theme.dice_html(msg["dice"]) if msg.get("dice") else ""
+    if msg.get("art"):
+        extra += theme.art_card_html(msg["art"])
     theme.chat_message(msg["role"], msg["content"], extra)
 
 last_turn = st.session_state.debug_log[-1] if st.session_state.debug_log else {}
@@ -137,5 +169,7 @@ if state["escaped"]:
     st.stop()
 
 if player_input := st.chat_input("What do you do, adventurer?"):
-    play_turn(player_input)
+    theme.chat_message("user", player_input)
+    with st.spinner("The Dungeon Master weighs your fate..."):
+        play_turn(player_input)
     st.rerun()
