@@ -1,6 +1,6 @@
-# 🔐 AI Escape Room — *The Locked Library*
+# 🎲 AI Escape Room — *The Locked Library*
 
-A text-based escape-room game where a Large Language Model (Google Gemini) acts as the Game Master. The player wakes up in a locked library, explores it in plain English, collects items, solves three puzzles and unlocks the exit.
+A fantasy text escape room in the spirit of a tabletop RPG, where a Large Language Model (Google Gemini) plays the Dungeon Master. The player wakes up in a forgotten wizard's library, explores it in plain English, collects items, solves three puzzles and breaks the rune seal on the door.
 
 The project is built in two versions:
 
@@ -13,7 +13,7 @@ The project is built in two versions:
 | Resists cheating | ❌ | ✅ (see [test cases](tests/test_cases.md)) |
 | Works without API key | ❌ | ✅ offline mode with plain-text narration |
 
-![Version 2 gameplay](docs/screenshots/v2_escaped.png)
+![Version 2 gameplay](docs/screenshots/v2_start.png)
 
 ---
 
@@ -31,17 +31,17 @@ Version 1 shows these problems; Version 2 fixes them by **separating game logic 
 
 ## The game
 
-The room has 7 interactive objects (desk, bookshelf, painting, drawer, clock, rug, door), 2 collectable items (torn note, UV flashlight), 3 puzzles and a final challenge:
+The room has 9 interactive objects (writing desk, bookshelf, painting, drawer, grandfather clock, rug, torch sconces, arched window, rune door), 2 collectable items (torn parchment, moonstone lantern), 3 puzzles and a final challenge:
 
-1. **Drawer** — read the digits on three books in the order of the colours in the painting.
-2. **Hidden message** — shine the UV flashlight (found in the drawer) on the desk.
+1. **Drawer** — read the numerals on three books in the order of the colours in the painting.
+2. **Hidden message** — shine the moonstone lantern (found in the drawer) on the desk to reveal invisible ink.
 3. **Clock** — the stopped clock and its brass plate tell you how the code ends.
-4. **Door** — combine both clues into the 4-digit door code.
+4. **Rune door** — combine both clues into the 4-digit code of the runic dials.
 
 <details>
 <summary>Spoiler: full walkthrough</summary>
 
-`examine the bookshelf` → `examine the painting` → `enter 582 on the drawer` → `take the flashlight` → `use the flashlight on the desk` → `examine the clock` → `enter 4715 on the door`
+`examine the bookshelf` → `examine the painting` → `enter 582 on the drawer` → `take the lantern` → `use the lantern on the desk` → `examine the clock` → `enter 4715 on the door`
 </details>
 
 ---
@@ -100,6 +100,20 @@ player text → Parser → Action → GameEngine (validate + update state) → R
 
 ---
 
+## Look and feel
+
+The interface is styled like a tabletop RPG session. All artwork is original vector art drawn in SVG for this project (`ui/assets/`). The fonts are open-source (SIL OFL) and bundled in `ui/fonts/`, so the game looks the same offline.
+
+- **Illustrated scene banner.** The library with its bookshelf, painting, clock, desk and rune door.
+- **Parchment cards** for the Dungeon Master and **dark leather cards** for the player, with hooded-DM and knight avatars.
+- **Adventurer's sheet** in the sidebar (V2): turn counter, ward status for the drawer and door, inventory slots with item icons, and a quest log that ticks off solved puzzles.
+- **🎲 Roll for Insight.** The hint button rolls a d20 for flavour. The roll is cosmetic: the hint itself still comes from the engine's progress-aware hint list.
+- **Victory scroll** with a wax seal and XP based on the number of turns.
+
+All styling lives in `ui/theme.py`. The game logic does not depend on it.
+
+![Scene art](docs/screenshots/scene_art.png)
+
 ## Installation
 
 Requirements: Python 3.10+ and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
@@ -130,7 +144,7 @@ The app opens at <http://localhost:8501>. Version 2 also runs without a key (off
 ## Testing
 
 ```bash
-pytest -v                                   # 44 unit tests for engine, parser and narrator (no API key needed)
+pytest -v                                   # 45 unit tests for engine, parser and narrator (no API key needed)
 python scripts/adversarial_test.py          # attack scenarios against V2
 python scripts/adversarial_test.py --v1     # same attacks against V1 using Gemini
 ```
@@ -151,19 +165,21 @@ Results are written to [`docs/adversarial_results.md`](docs/adversarial_results.
 AI-Escape-Room/
 ├── version1/            # LLM-only Game Master
 ├── version2/            # engine + state + parser + narrator
+├── ui/                  # shared fantasy theme: theme.py, SVG art, OFL fonts
 ├── tests/               # pytest suites and documented test cases
 ├── scripts/             # adversarial V1-vs-V2 runner
 ├── docs/
 │   ├── diagrams/        # Mermaid sources + PNG
 │   ├── screenshots/
 │   └── report.pdf       # 2–3 page project report
+├── .streamlit/config.toml
 ├── .env.example
 └── requirements.txt
 ```
 
 ## Technologies
 
-Python · Streamlit · Google Gemini API (`google-genai`) · python-dotenv · pytest · Mermaid
+Python · Streamlit · Google Gemini API (`google-genai`) · python-dotenv · pytest · Mermaid · custom CSS + SVG
 
 ## Limitations and future work
 

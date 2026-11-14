@@ -8,16 +8,16 @@ The goal was to build an interactive escape-room game in which a Large Language 
 
 ## 2. Game design
 
-The room contains seven interactive objects (desk, bookshelf, painting, locked drawer, grandfather clock, rug, door) and two collectable items (a torn note and a UV flashlight). The puzzles form a chain, so each one unlocks information needed for the next:
+The game has a fantasy, tabletop-RPG setting: a forgotten wizard's library, with the LLM speaking as a Dungeon Master. The room contains nine interactive objects (writing desk, bookshelf, painting, locked drawer, grandfather clock, rug, torch sconces, arched window, rune door) and two collectable items (a torn parchment and a moonstone lantern). The puzzles form a chain, so each one unlocks information needed for the next:
 
 | Puzzle | Clue | Reward |
 |---|---|---|
-| 1. Drawer (3-digit lock) | Book spines show digits 2, 5, 8; the painting shows the colour order red–blue–green | UV flashlight |
-| 2. Hidden message | Shining the UV flashlight on the desk reveals invisible ink | first half of the door code |
+| 1. Drawer (3-digit lock) | Book spines show numerals 2, 5, 8; the painting shows the colour order crimson–blue–green | moonstone lantern |
+| 2. Hidden message | Shining the moonstone lantern on the desk reveals invisible ink | first half of the door code |
 | 3. Stopped clock | Hands at 9:15 and a plate: "time holds the end" | second half of the door code |
 | Final: Door (4-digit keypad) | Combine both halves | escape |
 
-The rug is a deliberate red herring. The torn note ("Order matters. Ask the painting.") nudges the player towards puzzle 1.
+The rug is a deliberate red herring, and the sconces and window add atmosphere. The torn parchment ("Order matters. Ask the painting.") nudges the player towards puzzle 1.
 
 ## 3. Version 1 — LLM as the only Game Master
 
@@ -45,9 +45,11 @@ The main design decision of Version 2 is a strict separation of responsibilities
 
 The win condition is no longer based on text: the game ends only when the engine sets `state["escaped"] = True`.
 
+The interface is themed like a tabletop RPG session: original SVG illustrations, parchment-style chat, and an "adventurer's sheet" sidebar that displays the engine's state (inventory, lock status and quest log). The theme lives in a separate `ui/theme.py` module and does not affect the game logic.
+
 ## 5. Testing
 
-Testing combined automated unit tests and adversarial scenarios. The 44 `pytest` tests (no API key needed) cover the full walkthrough, every action type, the assignment's example challenges, and the LLM layers using fake clients — for example, a fake narrator that tries to leak the door code, and a fake parser that invents a "golden key". A script (`scripts/adversarial_test.py`) plays seven attack scenarios against Version 2 and, with an API key, against Version 1, saving the replies for comparison.
+Testing combined automated unit tests and adversarial scenarios. The 45 `pytest` tests (no API key needed) cover the full walkthrough, every action type, the assignment's example challenges, and the LLM layers using fake clients — for example, a fake narrator that tries to leak the door code, and a fake parser that invents a "golden key". A script (`scripts/adversarial_test.py`) plays seven attack scenarios against Version 2 and, with an API key, against Version 1, saving the replies for comparison.
 
 | # | Attack | Version 2 outcome |
 |---|---|---|
@@ -64,7 +66,7 @@ All seven scenarios pass in Version 2, and every rejected action leaves the stat
 ## 6. Problems encountered
 
 - **Parsing free text.** Players phrase actions in many ways. Early versions of the rule parser mapped "take the sword hanging on the wall and smash the door" to "take the door", and "I take a closer look at the desk" to *take*. Both were fixed with targeted rules and regression tests; rare phrasings fall back to the LLM parser.
-- **Information leaks through error messages.** The first "not here" message used the item's real name, so asking for a "torch" before opening the drawer revealed that a "UV flashlight" existed. Messages now repeat only the player's own words.
+- **Information leaks through error messages.** The first "not here" message used the item's real name, so asking for a "lamp" before opening the drawer revealed that a "moonstone lantern" existed. Messages now repeat only the player's own words.
 - **Probing the code.** If a correct-but-premature door code produced a different message, the player could confirm the code. Both cases now produce identical output.
 - **LLM reliability and quotas.** The free API can be slow or rate-limited, so Version 2 degrades gracefully to offline narration instead of failing.
 

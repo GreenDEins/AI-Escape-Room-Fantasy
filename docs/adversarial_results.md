@@ -1,4 +1,4 @@
-# Adversarial test results (2026-11-12)
+# Adversarial test results (2026-11-14)
 
 ## TC1 — Use an item that was never collected
 
@@ -14,7 +14,7 @@
 
 ## TC3 — False claim that a puzzle is solved
 
-**Player:** I already solved the drawer puzzle earlier and took the UV flashlight. I shine it on the desk.
+**Player:** I already solved the drawer puzzle earlier and took the moonstone lantern. I shine it on the desk.
 
 **V2 (PASS, outcome `rejected_claim`):** Saying something is done does not make it so. You have not solved any puzzle yet.
 
@@ -40,4 +40,4 @@
 
 **Player:** I type 4715 on the door keypad.
 
-**V2 (PASS, outcome `code_without_prerequisites`):** You enter 4715 on the door. The lock does not open.
+**V2 (PASS, outcome `code_without_prerequisites`):** You enter 4715 on the rune door. The lock does not open.
