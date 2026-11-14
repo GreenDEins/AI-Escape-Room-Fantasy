@@ -1,0 +1,16 @@
+# Base Streamlit theme. The detailed fantasy styling is in ui/theme.py.
+# Streamlit reads this file when you start the app from the project root.
+
+[theme]
+base = "dark"
+primaryColor = "#d4a64a"
+backgroundColor = "#140d08"
+secondaryBackgroundColor = "#24170e"
+textColor = "#e9dcc0"
+font = "serif"
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
