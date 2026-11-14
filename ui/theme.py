@@ -392,7 +392,7 @@ def victory(turns: int) -> None:
   <div class="speaker">Quest complete</div>
   <h2>The Seal Is Broken</h2>
   <p>The runes fall silent and the archmage's prison releases you into the night.
-  You escaped in <b>{turns}</b> turns.</p>
+  You escaped in <b>{turns}</b> turn{'' if turns == 1 else 's'}.</p>
   <div class="xp">✦ {xp} XP earned ✦</div>
   <img class="seal" src="{svg_uri('seal')}" alt="wax seal">
 </div>""",
