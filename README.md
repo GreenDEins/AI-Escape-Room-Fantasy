@@ -133,7 +133,7 @@ All visuals live in `ui/` (`theme.py`, `art.py`, `assets/`, `fonts/`). The game 
 Requirements: Python 3.10+ and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ```bash
-git clone https://github.com/<your-username>/AI-Escape-Room.git
+git clone https://github.com/GreenDEins/AI-Escape-Room.git
 cd AI-Escape-Room
 
 python -m venv .venv
