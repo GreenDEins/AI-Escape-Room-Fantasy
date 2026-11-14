@@ -40,7 +40,7 @@ class Narrator:
     def __init__(self, config: dict, client=None, model: str | None = None):
         self.config = config
         self.client = client
-        self.model = model or os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+        self.model = model or os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
         self.secret_codes = [o["lock"]["code"] for o in config["objects"].values() if "lock" in o]
         self.last_source = "template"
         self.last_error: str | None = None

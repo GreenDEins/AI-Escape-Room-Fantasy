@@ -144,6 +144,12 @@ streamlit run version2/app.py      # Version 2
 
 The app opens at <http://localhost:8501>. Version 2 also runs without a key (offline narration); set `ESCAPE_ROOM_OFFLINE=1` to force it.
 
+## Troubleshooting
+
+- **The Dungeon Master repeats the game text word for word and a yellow warning appears.** Gemini returned an error; the warning shows it. The game stays fully playable.
+- **`404 ... no longer available` or `504 DEADLINE_EXCEEDED`.** Model availability on the free tier changes over time. Run `python scripts/check_models.py` to see which models answer with your key and how fast, then set the fastest one in `.env`, e.g. `GEMINI_MODEL=gemini-3.5-flash-lite`.
+- **PowerShell refuses to run `.venv\Scripts\activate`.** Run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in that window first.
+
 ## Testing
 
 ```bash
@@ -172,7 +178,7 @@ AI-Escape-Room/
 ├── version2/            # engine + state + parser + narrator
 ├── ui/                  # fantasy theme: theme.py, procedural art.py, textures, icons, OFL fonts
 ├── tests/               # pytest suites and documented test cases
-├── scripts/             # adversarial V1-vs-V2 runner, texture builder
+├── scripts/             # adversarial V1-vs-V2 runner, model checker, texture builder
 ├── docs/
 │   ├── diagrams/        # Mermaid sources + PNG
 │   ├── screenshots/

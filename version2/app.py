@@ -49,7 +49,7 @@ def get_llm_client():
 
 
 client = get_llm_client()
-model = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
+model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 
 def reset_game() -> None:
