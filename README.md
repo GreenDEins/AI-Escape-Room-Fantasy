@@ -1,4 +1,4 @@
-# 🎲 AI Escape Room — *The Locked Library*
+﻿# 🎲 AI Escape Room — *The Locked Library*
 
 A fantasy text escape room in the spirit of a tabletop RPG, where a Large Language Model (Google Gemini) plays the Dungeon Master. The player wakes up in a forgotten wizard's library, explores it in plain English, collects items, solves three puzzles and breaks the rune seal on the door.
 
@@ -133,8 +133,8 @@ All visuals live in `ui/` (`theme.py`, `art.py`, `assets/`, `fonts/`). The game 
 Requirements: Python 3.10+ and a free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ```bash
-git clone https://github.com/GreenDEins/AI-Escape-Room-Fantasy-.git
-cd AI-Escape-Room-Fantasy-
+git clone https://github.com/GreenDEins/AI-Escape-Room-Fantasy.git
+cd AI-Escape-Room-Fantasy
 
 python -m venv .venv
 # Windows: .venv\Scripts\activate
