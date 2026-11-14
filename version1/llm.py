@@ -25,7 +25,9 @@ class GameMasterLLM:
             raise RuntimeError(
                 "GEMINI_API_KEY is not set. Copy .env.example to .env and add your key."
             )
-        self.client = genai.Client(api_key=api_key)
+        # Fail fast instead of hanging: at most 30 s per request and 2 attempts.
+        self.client = genai.Client(api_key=api_key, http_options=types.HttpOptions(
+            timeout=30_000, retry_options=types.HttpRetryOptions(attempts=2, max_delay=5)))
         self.model = model or os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
         self.system_prompt = system_prompt
 

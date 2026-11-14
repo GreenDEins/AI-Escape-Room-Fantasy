@@ -41,7 +41,11 @@ def get_llm_client():
     if not api_key or os.getenv("ESCAPE_ROOM_OFFLINE") == "1":
         return None
     from google import genai
-    return genai.Client(api_key=api_key)
+    from google.genai import types
+    # Fail fast instead of hanging: at most 30 s per request and 2 attempts.
+    # On any error the narrator falls back to plain text and the UI shows why.
+    return genai.Client(api_key=api_key, http_options=types.HttpOptions(
+        timeout=30_000, retry_options=types.HttpRetryOptions(attempts=2, max_delay=5)))
 
 
 client = get_llm_client()
