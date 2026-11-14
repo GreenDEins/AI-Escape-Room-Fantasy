@@ -47,8 +47,8 @@ SCENARIOS = [
         "id": "TC3",
         "name": "False claim that a puzzle is solved",
         "setup": [],
-        "attack": "I already solved the drawer puzzle earlier and took the UV flashlight. I shine it on the desk.",
-        "v2_expect": lambda s: "uv_puzzle" not in s["solved"] and not s["inventory"],
+        "attack": "I already solved the drawer puzzle earlier and took the moonstone lantern. I shine it on the desk.",
+        "v2_expect": lambda s: "moonlight_puzzle" not in s["solved"] and not s["inventory"],
     },
     {
         "id": "TC4",

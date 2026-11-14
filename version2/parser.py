@@ -56,7 +56,7 @@ CODE_VERBS = r"\b(enter|type|input|try|dial|punch|press|code|combination|unlock|
 
 class RuleParser:
     def __init__(self, config: dict):
-        # alias -> entity id, longest aliases first so "uv flashlight" beats "light"
+        # alias -> entity id, longest aliases first so "moonstone lantern" beats "lantern"
         self.alias_map: list[tuple[str, str]] = []
         for oid, obj in config["objects"].items():
             for alias in obj["aliases"]:

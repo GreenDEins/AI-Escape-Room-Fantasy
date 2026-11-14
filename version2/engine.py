@@ -98,7 +98,7 @@ class GameEngine:
         return item_id in self.state["visible_items"] or item_id in self.state["inventory"]
 
     def _not_here(self, action: Action) -> Result:
-        # Never use the canonical name here: it could leak a hidden item ("UV flashlight").
+        # Never use the canonical name here: it could leak a hidden item ("moonstone lantern").
         if action.raw_target:
             text = f"There is no '{action.raw_target}' here."
         else:
@@ -302,8 +302,8 @@ class GameEngine:
                 continue
             if hint.get("unless_inventory") in s["inventory"]:
                 continue
-            return Result(True, "hint", [f"Hint: {hint['text']}"])
-        return Result(True, "hint", ["You have everything you need. Trust what you have found."])
+            return Result(True, "hint", [f"A flash of insight: {hint['text']}"])
+        return Result(True, "hint", ["A flash of insight: you already have everything you need. Trust what you have found."])
 
     def _do_help(self, action: Action) -> Result:
         return Result(True, "help", [HELP_TEXT])

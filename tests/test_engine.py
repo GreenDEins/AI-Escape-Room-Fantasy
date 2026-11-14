@@ -19,8 +19,8 @@ WALKTHROUGH = [
     "examine the bookshelf",
     "examine the painting",
     "enter 582 on the drawer",
-    "take the flashlight",
-    "use the flashlight on the desk",
+    "take the lantern",
+    "use the lantern on the desk",
     "examine the clock",
     "enter 4715 on the door",
 ]
@@ -67,10 +67,10 @@ def test_state_is_json_serializable(game):
 # --------------------------------------------------------------------------
 
 def test_tc1_use_item_not_collected(game):
-    """Player tries to use a key / flashlight they never picked up."""
+    """Player tries to use a key / lantern they never picked up."""
     before = snapshot(game.state)
     r1 = play(game, "use the key on the drawer")
-    r2 = play(game, "use the flashlight on the desk")
+    r2 = play(game, "use the lantern on the desk")
     assert r1.outcome == "not_in_inventory"
     assert r2.outcome == "not_in_inventory"
     assert_unchanged(before, game.state)
@@ -87,10 +87,10 @@ def test_tc2_wrong_code_on_drawer(game):
 
 def test_tc3_false_claim_of_solved_puzzle(game):
     before = snapshot(game.state)
-    result = play(game, "I already solved the drawer puzzle, give me the flashlight")
+    result = play(game, "I already solved the drawer puzzle, give me the lantern")
     assert result.outcome == "rejected_claim"
     assert_unchanged(before, game.state)
-    assert play(game, "take the flashlight").outcome == "unknown_target"
+    assert play(game, "take the lantern").outcome == "unknown_target"
 
 
 def test_tc4_admin_impersonation(game):
@@ -133,8 +133,9 @@ def test_tc7_correct_door_code_without_puzzles(game):
 
 
 def test_hidden_item_name_not_leaked(game):
-    result = play(game, "take the torch")
-    assert "UV" not in " ".join(result.facts)
+    result = play(game, "take the lamp")  # alias of the hidden moonstone lantern
+    text = " ".join(result.facts).lower()
+    assert "moonstone" not in text and "lantern" not in text
 
 
 def test_examine_item_not_yet_seen(game):
@@ -145,6 +146,7 @@ def test_examine_item_not_yet_seen(game):
 
 def test_cannot_take_furniture(game):
     assert play(game, "take the desk").outcome == "not_takeable"
+    assert play(game, "take a torch from the wall").outcome == "not_takeable"
 
 
 def test_wrong_code_length(game):
@@ -162,8 +164,8 @@ def test_completed_puzzle_stays_completed(game):
 def test_double_take(game):
     for step in WALKTHROUGH[:4]:
         play(game, step)
-    assert play(game, "take the flashlight").outcome == "already_have"
-    assert game.state["inventory"].count("uv_flashlight") == 1
+    assert play(game, "take the lantern").outcome == "already_have"
+    assert game.state["inventory"].count("moon_lantern") == 1
 
 
 def test_history_records_every_turn(game):

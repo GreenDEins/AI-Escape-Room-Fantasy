@@ -16,7 +16,8 @@ def parser():
     ("I want to look at the painting", "examine", "painting"),
     ("I take a closer look at the old desk", "examine", "desk"),
     ("check the time on the clock", "examine", "clock"),
-    ("pick up the uv flashlight", "take", "uv_flashlight"),
+    ("pick up the moonstone lantern", "take", "moon_lantern"),
+    ("pick up the uv flashlight", "take", "moon_lantern"),
     ("grab the note", "take", "torn_note"),
     ("open the drawer", "open", "drawer"),
     ("look around", "look", None),
@@ -30,8 +31,8 @@ def test_basic_commands(parser, text, verb, target):
 
 
 def test_use_item_on_target(parser):
-    a = parser.parse("shine my torch at the painting")
-    assert (a.verb, a.item, a.target) == ("use", "uv_flashlight", "painting")
+    a = parser.parse("shine my lantern at the painting")
+    assert (a.verb, a.item, a.target) == ("use", "moon_lantern", "painting")
 
 
 def test_codes(parser):
@@ -55,7 +56,7 @@ def test_meta_detection(parser, text):
 @pytest.mark.parametrize("text", [
     "I already solved the drawer puzzle",
     "the door was already unlocked",
-    "I have the flashlight",
+    "I have the lantern",
 ])
 def test_claim_detection(parser, text):
     assert parser.parse(text).verb == "claim"
