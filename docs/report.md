@@ -45,11 +45,11 @@ The main design decision of Version 2 is a strict separation of responsibilities
 
 The win condition is no longer based on text: the game ends only when the engine sets `state["escaped"] = True`.
 
-The interface is themed like a tabletop RPG session: original SVG illustrations, parchment-style chat, and an "adventurer's sheet" sidebar that displays the engine's state (inventory, lock status and quest log). The theme lives in a separate `ui/theme.py` module and does not affect the game logic.
+The interface is themed like a tabletop RPG session. The library is drawn procedurally in SVG (`ui/art.py`) and follows the engine state: the drawer opens, the hidden message glows and the door swings open. Replies include close-up illustrations of the examined objects, and the sidebar is an "adventurer's sheet" showing inventory, lock status and the quest log. The theme reads the state but cannot change it, so it does not affect the game logic.
 
 ## 5. Testing
 
-Testing combined automated unit tests and adversarial scenarios. The 45 `pytest` tests (no API key needed) cover the full walkthrough, every action type, the assignment's example challenges, and the LLM layers using fake clients — for example, a fake narrator that tries to leak the door code, and a fake parser that invents a "golden key". A script (`scripts/adversarial_test.py`) plays seven attack scenarios against Version 2 and, with an API key, against Version 1, saving the replies for comparison.
+Testing combined automated unit tests and adversarial scenarios. The 78 `pytest` tests (no API key needed) cover the full walkthrough, every action type, the assignment's example challenges, the artwork in every game state, and the LLM layers using fake clients — for example, a fake narrator that tries to leak the door code, and a fake parser that invents a "golden key". A script (`scripts/adversarial_test.py`) plays seven attack scenarios against Version 2 and, with an API key, against Version 1, saving the replies for comparison.
 
 | # | Attack | Version 2 outcome |
 |---|---|---|
@@ -68,6 +68,7 @@ All seven scenarios pass in Version 2, and every rejected action leaves the stat
 - **Parsing free text.** Players phrase actions in many ways. Early versions of the rule parser mapped "take the sword hanging on the wall and smash the door" to "take the door", and "I take a closer look at the desk" to *take*. Both were fixed with targeted rules and regression tests; rare phrasings fall back to the LLM parser.
 - **Information leaks through error messages.** The first "not here" message used the item's real name, so asking for a "lamp" before opening the drawer revealed that a "moonstone lantern" existed. Messages now repeat only the player's own words.
 - **Probing the code.** If a correct-but-premature door code produced a different message, the player could confirm the code. Both cases now produce identical output.
+- **Model availability.** During testing the API returned `404`: `gemini-2.5-flash` was no longer available to new users. The default moved to `gemini-3.8-flash`, the model stays configurable through `GEMINI_MODEL`, and Version 2 now shows the exact API error instead of silently falling back to plain text.
 - **LLM reliability and quotas.** The free API can be slow or rate-limited, so Version 2 degrades gracefully to offline narration instead of failing.
 
 ## 7. Limitations and future work
