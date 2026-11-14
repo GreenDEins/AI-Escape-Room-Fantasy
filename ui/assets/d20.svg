@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Twenty-sided die -->
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e05a4a"/><stop offset="1" stop-color="#7a1018"/></linearGradient>
+    <linearGradient id="face" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f07060"/><stop offset="1" stop-color="#b02a2a"/></linearGradient>
+  </defs>
+  <polygon points="64,6 114,35 114,93 64,122 14,93 14,35" fill="url(#g)" stroke="#3a0808" stroke-width="3" stroke-linejoin="round"/>
+  <polygon points="30,86 98,86 64,122" fill="#9a2020"/>
+  <polygon points="64,30 98,86 30,86" fill="url(#face)" stroke="#f6dc8c" stroke-width="2" stroke-linejoin="round"/>
+  <g stroke="#f6dc8c" stroke-width="2" opacity=".85" stroke-linejoin="round">
+    <path d="M64 6L64 30M14 35L64 30L114 35M14 35L30 86M114 35L98 86M14 93L30 86M114 93L98 86M30 86L64 122L98 86"/>
+  </g>
+  <text x="64" y="76" text-anchor="middle" font-family="Georgia, serif" font-weight="bold" font-size="26" fill="#fff4d6">20</text>
+</svg>

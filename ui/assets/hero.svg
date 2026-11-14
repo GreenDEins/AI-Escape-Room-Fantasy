@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Adventurer: knight's helm with red plume -->
+  <defs>
+    <radialGradient id="bg" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#4a3420"/><stop offset="1" stop-color="#1a1008"/></radialGradient>
+    <linearGradient id="steel" x1="0" x2="1"><stop offset="0" stop-color="#6d7380"/><stop offset=".45" stop-color="#d8dde6"/><stop offset="1" stop-color="#4c515c"/></linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc8c"/><stop offset=".5" stop-color="#c9973a"/><stop offset="1" stop-color="#7a5418"/></linearGradient>
+    <linearGradient id="plume" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2463a"/><stop offset="1" stop-color="#7a1414"/></linearGradient>
+  </defs>
+  <circle cx="64" cy="64" r="62" fill="url(#ring)"/>
+  <circle cx="64" cy="64" r="58" fill="url(#bg)"/>
+  <path d="M60 24c8-14 30-14 40-4-10-2-20 0-26 6 10-2 20 2 24 10-12-6-26-4-34 2z" fill="url(#plume)"/>
+  <path d="M64 26c-20 0-32 16-32 38v28c0 8 14 16 32 16s32-8 32-16V64c0-22-12-38-32-38z" fill="url(#steel)" stroke="#2a2d33" stroke-width="2"/>
+  <path d="M64 26v82" stroke="#5b606b" stroke-width="3"/>
+  <path d="M38 62h52v8H38z" fill="#16181c"/>
+  <path d="M42 78h44" stroke="#16181c" stroke-width="3" stroke-dasharray="4 4"/>
+  <path d="M42 86h44" stroke="#16181c" stroke-width="3" stroke-dasharray="4 4"/>
+  <circle cx="40" cy="96" r="2.5" fill="#c9973a"/><circle cx="88" cy="96" r="2.5" fill="#c9973a"/>
+  <circle cx="64" cy="64" r="58" fill="none" stroke="#2a1a08" stroke-width="2"/>
+</svg>
