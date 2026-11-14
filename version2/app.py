@@ -81,6 +81,7 @@ def play_turn(player_text: str, action: Action | None = None, dice: int | None =
         "outcome": result.outcome,
         "facts": result.facts,
         "narration": narrator.last_source,
+        "llm_error": narrator.last_error,
     })
 
 
@@ -125,6 +126,11 @@ theme.banner(CONFIG["title"], CONFIG.get("subtitle", ""), "Version 2")
 for msg in st.session_state.messages:
     extra = theme.dice_html(msg["dice"]) if msg.get("dice") else ""
     theme.chat_message(msg["role"], msg["content"], extra)
+
+last_turn = st.session_state.debug_log[-1] if st.session_state.debug_log else {}
+if last_turn.get("llm_error"):
+    st.warning("Gemini could not narrate this turn, so the plain game text is shown instead. "
+               f"Error: {last_turn['llm_error']}")
 
 if state["escaped"]:
     theme.victory(state["turn"])

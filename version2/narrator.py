@@ -43,6 +43,7 @@ class Narrator:
         self.model = model or os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
         self.secret_codes = [o["lock"]["code"] for o in config["objects"].values() if "lock" in o]
         self.last_source = "template"
+        self.last_error: str | None = None
 
     @property
     def uses_llm(self) -> bool:
@@ -56,6 +57,7 @@ class Narrator:
 
         from google.genai import types
 
+        self.last_error = None
         context = "\n".join(f"- {r}" for r in recent[-3:]) or "- (start of the game)"
         facts = "\n".join(f"- {f}" for f in result.facts)
         prompt = (
@@ -72,8 +74,9 @@ class Narrator:
                 config=types.GenerateContentConfig(system_instruction=NARRATOR_PROMPT, temperature=0.7),
             )
             text = (resp.text or "").strip()
-        except Exception:
+        except Exception as err:  # network, invalid key, quota, unknown model...
             self.last_source = "template (API error)"
+            self.last_error = f"{type(err).__name__}: {err}"[:300]
             return fallback
 
         if not text or not self.is_safe(text, result):

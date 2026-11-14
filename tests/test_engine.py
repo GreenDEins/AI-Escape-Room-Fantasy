@@ -227,3 +227,16 @@ def test_engine_rejects_forged_action(game):
     result = game.engine.process(Action("open", target="door"))
     assert result.outcome == "locked"
     assert game.state["escaped"] is False
+
+
+def test_narrator_reports_api_error(game):
+    class BrokenClient:
+        class models:
+            @staticmethod
+            def generate_content(**kwargs):
+                raise PermissionError("API key not valid")
+
+    result = play(game, "examine the rug")
+    narrator = Narrator(game.config, BrokenClient())
+    assert narrator.narrate(result, "examine the rug", []) == " ".join(result.facts)
+    assert "API key not valid" in narrator.last_error
